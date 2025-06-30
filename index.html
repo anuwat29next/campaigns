@@ -18,6 +18,72 @@
 <input type="text" id="orderRefId" placeholder="Enter order_ref_id">
 <button id="submitUpsellBtn">Submit Upsell</button>
 
+  <button id="createCaret">Create Cart</button>
+
+  <script>
+  document.getElementById('createCaret').addEventListener('click', function () {
+    const payload = {
+   "user": {
+       "email": "anuwat209@29next.com",
+       "first_name": "Man",
+       "last_name": "Campaigns",
+       "phone_number": "+15732020209"
+    //    ,"language": "1234"
+    },
+    "lines": [
+{
+            "package_id":1,
+            "quantity": 2
+        }
+    ],
+    // "vouchers": ["FREE_SHIPPING"],
+    "attribution": {
+        "funnel": "M funnel",
+        "utm_source": "PA utm_source",
+        "utm_medium": "PA utm_medium",
+        "utm_campaign": "PA utm_campaign",
+        "utm_term": "PA utm_term",
+        "utm_content": "PA utm_content",
+        "gclid": "PA gclid",
+        "metadata": {
+        "attribution_meta_decimal": "0.01",
+        "attribution_meta_integer": "1000",
+        "attribution_meta_text": "Han"
+        },
+        "affiliate": "PA affiliate",
+        "subaffiliate1": "PA subaffiliate1",
+        "subaffiliate2": "PA subaffiliate2",
+        "subaffiliate3": "PA subaffiliate3",
+        "subaffiliate4": "PA subaffiliate4",
+        "subaffiliate5": "PA subaffiliate5",
+        "agent": 1
+    }
+};
+    fetch('https://campaigns.anuwatwork.com/api/v1/carts/', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'sODuLus5ShTEkHMIb5ZFwLyu8FEVvH8IStqA6Tfj' // Replace with your actual token
+      },
+      body: JSON.stringify(payload)
+    })
+    .then(response => {
+      if (!response.ok) {
+        throw new Error('HTTP error ' + response.status);
+      }
+      return response.json();
+    })
+    .then(data => {
+      console.log('Success:', data);
+      alert('Order submitted!');
+    })
+    .catch(error => {
+      console.error('Error:', error);
+      alert('Failed to submit order.');
+    });
+  });
+</script>
+
   <script>
   document.getElementById('submitUpsellBtn').addEventListener('click', function () {
     const orderRefId = document.getElementById('orderRefId').value.trim();
