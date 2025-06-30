@@ -14,6 +14,50 @@
   </script>
   <button id="submitBtn">Submit Order</button>
 
+  <label for="orderRefId">Order Ref ID:</label>
+<input type="text" id="orderRefId" placeholder="Enter order_ref_id">
+<button id="submitUpsellBtn">Submit Upsell</button>
+
+  <script>
+  document.getElementById('submitUpsellBtn').addEventListener('click', function () {
+    const orderRefId = document.getElementById('orderRefId').value.trim();
+
+    if (!orderRefId) {
+      alert('Please enter a valid order_ref_id.');
+      return;
+    }
+
+    const url = `/api/v1/orders/${encodeURIComponent(orderRefId)}/upsells/`;
+
+    const payload = {
+      lines: [{ package_id: 1 }]
+    };
+
+    fetch(url, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'xxxx' // Replace with your real token
+      },
+      body: JSON.stringify(payload)
+    })
+    .then(response => {
+      if (!response.ok) {
+        throw new Error(`HTTP error: ${response.status}`);
+      }
+      return response.json();
+    })
+    .then(data => {
+      console.log('Upsell success:', data);
+      alert('Upsell submitted!');
+    })
+    .catch(error => {
+      console.error('Upsell error:', error);
+      alert('Failed to submit upsell.');
+    });
+  });
+</script>
+
 <script>
   document.getElementById('submitBtn').addEventListener('click', function () {
     const payload = {
