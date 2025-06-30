@@ -93,7 +93,7 @@
       return;
     }
 
-    const url = `/api/v1/orders/${encodeURIComponent(orderRefId)}/upsells/`;
+    const url = `https://campaigns.anuwatwork.com/api/v1/orders/${encodeURIComponent(orderRefId)}/upsells/`;
 
     const payload = {
       lines: [{ package_id: 1 }]
@@ -103,7 +103,7 @@
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': 'xxxx' // Replace with your real token
+        'Authorization': 'sODuLus5ShTEkHMIb5ZFwLyu8FEVvH8IStqA6Tfj' // Replace with your real token
       },
       body: JSON.stringify(payload)
     })
