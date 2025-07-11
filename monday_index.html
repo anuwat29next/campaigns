@@ -20,12 +20,64 @@
 
 <h2>Create Cart</h2>
 <form id="cartForm">
-  <label>Email: <input type="email" name="email" required></label><br>
-  <label>First Name: <input type="text" name="first_name" required></label><br>
-  <label>Last Name: <input type="text" name="last_name" required></label><br>
-  <label>Phone: <input type="text" name="phone_number" required></label><br>
-  <label>Package ID: <input type="number" name="package_id" required></label><br>
-  <label>Quantity: <input type="number" name="quantity" value="1" required></label><br>
+  <fieldset>
+    <legend>User Info</legend>
+    <label>Email: <input type="email" name="email" required></label><br>
+    <label>First Name: <input type="text" name="first_name" required></label><br>
+    <label>Last Name: <input type="text" name="last_name" required></label><br>
+    <label>Phone Number: <input type="text" name="phone_number" required></label><br>
+    <label>Language: <input type="text" name="language"></label><br>
+    <label>Accepts Marketing: <input type="checkbox" name="accepts_marketing" checked></label>
+  </fieldset>
+
+  <fieldset>
+    <legend>Address</legend>
+    <label>Country: <input type="text" name="country" required></label><br>
+    <label>First Name: <input type="text" name="addr_first_name" required></label><br>
+    <label>Last Name: <input type="text" name="addr_last_name" required></label><br>
+    <label>Line1: <input type="text" name="line1"></label><br>
+    <label>Line2: <input type="text" name="line2"></label><br>
+    <label>Line3: <input type="text" name="line3"></label><br>
+    <label>Line4: <input type="text" name="line4"></label><br>
+    <label>State: <input type="text" name="state"></label><br>
+    <label>Postcode: <input type="text" name="postcode"></label><br>
+    <label>Phone Number: <input type="text" name="addr_phone_number"></label><br>
+    <label>Notes: <input type="text" name="notes"></label>
+  </fieldset>
+
+  <fieldset>
+    <legend>Package Line</legend>
+    <label>Package ID: <input type="number" name="package_id" required></label><br>
+    <label>Quantity: <input type="number" name="quantity" value="1"></label><br>
+    <label>Is Upsell: <input type="checkbox" name="is_upsell"></label>
+  </fieldset>
+
+  <fieldset>
+    <legend>Attribution</legend>
+    <label>Funnel: <input type="text" name="funnel"></label><br>
+    <label>UTM Source: <input type="text" name="utm_source"></label><br>
+    <label>UTM Medium: <input type="text" name="utm_medium"></label><br>
+    <label>UTM Campaign: <input type="text" name="utm_campaign"></label><br>
+    <label>UTM Term: <input type="text" name="utm_term"></label><br>
+    <label>UTM Content: <input type="text" name="utm_content"></label><br>
+    <label>GCLID: <input type="text" name="gclid"></label><br>
+    <label>Affiliate: <input type="text" name="affiliate"></label><br>
+    <label>Subaffiliate 1-5:<br>
+      <input type="text" name="subaffiliate1"><br>
+      <input type="text" name="subaffiliate2"><br>
+      <input type="text" name="subaffiliate3"><br>
+      <input type="text" name="subaffiliate4"><br>
+      <input type="text" name="subaffiliate5">
+    </label><br>
+    <label>Metadata Property 1: <input type="text" name="property1"></label><br>
+    <label>Metadata Property 2: <input type="text" name="property2"></label>
+  </fieldset>
+
+  <fieldset>
+    <legend>Vouchers</legend>
+    <label>Vouchers (comma separated): <input type="text" name="vouchers"></label>
+  </fieldset>
+
   <button type="submit">Create Cart</button>
 </form>
 
@@ -71,40 +123,59 @@
   document.getElementById('cartForm').addEventListener('submit', function (e) {
     e.preventDefault();
     const form = e.target;
+
     const payload = {
       user: {
         email: form.email.value,
         first_name: form.first_name.value,
         last_name: form.last_name.value,
-        phone_number: form.phone_number.value
+        phone_number: form.phone_number.value,
+        language: form.language.value,
+        accepts_marketing: form.accepts_marketing.checked
+      },
+      address: {
+        country: form.country.value,
+        first_name: form.addr_first_name.value,
+        last_name: form.addr_last_name.value,
+        line1: form.line1.value,
+        line2: form.line2.value,
+        line3: form.line3.value,
+        line4: form.line4.value,
+        state: form.state.value,
+        postcode: form.postcode.value,
+        phone_number: form.addr_phone_number.value,
+        notes: form.notes.value
       },
       lines: [
         {
           package_id: parseInt(form.package_id.value),
-          quantity: parseInt(form.quantity.value)
+          quantity: parseInt(form.quantity.value),
+          is_upsell: form.is_upsell.checked
         }
       ],
       attribution: {
-        funnel: "M funnel",
-        utm_source: "PA utm_source",
-        utm_medium: "PA utm_medium",
-        utm_campaign: "PA utm_campaign",
-        utm_term: "PA utm_term",
-        utm_content: "PA utm_content",
-        gclid: "PA gclid",
+        funnel: form.funnel.value,
+        utm_source: form.utm_source.value,
+        utm_medium: form.utm_medium.value,
+        utm_campaign: form.utm_campaign.value,
+        utm_term: form.utm_term.value,
+        utm_content: form.utm_content.value,
+        gclid: form.gclid.value,
+        affiliate: form.affiliate.value,
+        subaffiliate1: form.subaffiliate1.value,
+        subaffiliate2: form.subaffiliate2.value,
+        subaffiliate3: form.subaffiliate3.value,
+        subaffiliate4: form.subaffiliate4.value,
+        subaffiliate5: form.subaffiliate5.value,
         metadata: {
-          attribution_meta_decimal: "0.01",
-          attribution_meta_integer: "1000",
-          attribution_meta_text: "Han"
-        },
-        affiliate: "PA affiliate",
-        subaffiliate1: "PA subaffiliate1",
-        subaffiliate2: "PA subaffiliate2",
-        subaffiliate3: "PA subaffiliate3",
-        subaffiliate4: "PA subaffiliate4",
-        subaffiliate5: "PA subaffiliate5",
-        agent: 1
-      }
+          property1: form.property1.value || null,
+          property2: form.property2.value || null
+        }
+      },
+      vouchers: form.vouchers.value
+        .split(',')
+        .map(v => v.trim())
+        .filter(v => v !== "")
     };
 
     fetch('https://campaigns.anuwatwork.com/api/v1/carts/', {
@@ -115,14 +186,17 @@
       },
       body: JSON.stringify(payload)
     })
-    .then(res => res.json())
+    .then(res => {
+      if (!res.ok) throw new Error("Error: " + res.status);
+      return res.json();
+    })
     .then(data => {
-      console.log('Cart Success:', data);
-      alert('Cart created!');
+      console.log("Cart created:", data);
+      alert("Cart created successfully!");
     })
     .catch(err => {
       console.error(err);
-      alert('Failed to create cart.');
+      alert("Failed to create cart.");
     });
   });
 
