@@ -83,32 +83,99 @@
 
 <hr>
 
-<h2>Submit Order</h2>
+<h2>Create Order</h2>
 <form id="orderForm">
-  <!-- User Info -->
-  <label>Email: <input type="email" name="email" required></label><br>
-  <label>First Name: <input type="text" name="first_name" required></label><br>
-  <label>Last Name: <input type="text" name="last_name" required></label><br>
-  <label>Phone: <input type="text" name="phone_number" required></label><br>
+  <fieldset>
+    <legend>User Info</legend>
+    <label>Email: <input type="email" name="email" required></label><br>
+    <label>First Name: <input type="text" name="first_name" required></label><br>
+    <label>Last Name: <input type="text" name="last_name" required></label><br>
+    <label>Phone Number: <input type="text" name="phone_number" required></label><br>
+    <label>Language: <input type="text" name="language"></label><br>
+    <label>IP Address: <input type="text" name="ip"></label><br>
+    <label>User Agent: <input type="text" name="user_agent"></label><br>
+    <label>Accepts Marketing: <input type="checkbox" name="accepts_marketing" checked></label>
+  </fieldset>
 
-  <!-- Package Info -->
-  <label>Package ID: <input type="number" name="package_id" required></label><br>
-  <label>Quantity: <input type="number" name="quantity" value="1" required></label><br>
+  <fieldset>
+    <legend>Shipping Address</legend>
+    <label>Country: <input type="text" name="s_country"></label><br>
+    <label>First Name: <input type="text" name="s_first_name"></label><br>
+    <label>Last Name: <input type="text" name="s_last_name"></label><br>
+    <label>Line1: <input type="text" name="s_line1"></label><br>
+    <label>Line2: <input type="text" name="s_line2"></label><br>
+    <label>Line3: <input type="text" name="s_line3"></label><br>
+    <label>Line4: <input type="text" name="s_line4"></label><br>
+    <label>State: <input type="text" name="s_state"></label><br>
+    <label>Postcode: <input type="text" name="s_postcode"></label><br>
+    <label>Phone: <input type="text" name="s_phone_number"></label><br>
+    <label>Notes: <input type="text" name="s_notes"></label>
+  </fieldset>
 
-  <!-- Payment -->
-  <label>Card Token: <input type="text" name="card_token" required></label><br>
+  <fieldset>
+    <legend>Billing Address</legend>
+    <label>Same as shipping? <input type="checkbox" name="billing_same_as_shipping_address" checked></label><br>
+    <label>Country: <input type="text" name="b_country"></label><br>
+    <label>First Name: <input type="text" name="b_first_name"></label><br>
+    <label>Last Name: <input type="text" name="b_last_name"></label><br>
+    <label>Line1: <input type="text" name="b_line1"></label><br>
+    <label>Line2: <input type="text" name="b_line2"></label><br>
+    <label>Line3: <input type="text" name="b_line3"></label><br>
+    <label>Line4: <input type="text" name="b_line4"></label><br>
+    <label>State: <input type="text" name="b_state"></label><br>
+    <label>Postcode: <input type="text" name="b_postcode"></label><br>
+    <label>Phone: <input type="text" name="b_phone_number"></label><br>
+    <label>Notes: <input type="text" name="b_notes"></label>
+  </fieldset>
 
-  <!-- Address -->
-  <label>Shipping Method ID: <input type="number" name="shipping_method" value="1" required></label><br>
-  <label>Country: <input type="text" name="country" value="US"></label><br>
-  <label>Line1: <input type="text" name="line1" required></label><br>
-  <label>State: <input type="text" name="state" required></label><br>
-  <label>Postcode: <input type="text" name="postcode" required></label><br>
-  <label>City (Line4): <input type="text" name="line4" required></label><br>
-  <label>Phone: <input type="text" name="address_phone" required></label><br>
+  <fieldset>
+    <legend>Package Line</legend>
+    <label>Package ID: <input type="number" name="package_id"></label><br>
+    <label>Quantity: <input type="number" name="quantity" value="1"></label><br>
+    <label>Is Upsell: <input type="checkbox" name="is_upsell"></label>
+  </fieldset>
 
-  <button type="submit">Submit Order</button>
+  <fieldset>
+    <legend>Attribution</legend>
+    <label>Funnel: <input type="text" name="funnel"></label><br>
+    <label>UTM Source: <input type="text" name="utm_source"></label><br>
+    <label>UTM Medium: <input type="text" name="utm_medium"></label><br>
+    <label>UTM Campaign: <input type="text" name="utm_campaign"></label><br>
+    <label>UTM Term: <input type="text" name="utm_term"></label><br>
+    <label>UTM Content: <input type="text" name="utm_content"></label><br>
+    <label>GCLID: <input type="text" name="gclid"></label><br>
+    <label>Affiliate: <input type="text" name="affiliate"></label><br>
+    <label>Subaffiliate 1-5:<br>
+      <input type="text" name="subaffiliate1"><br>
+      <input type="text" name="subaffiliate2"><br>
+      <input type="text" name="subaffiliate3"><br>
+      <input type="text" name="subaffiliate4"><br>
+      <input type="text" name="subaffiliate5">
+    </label><br>
+    <label>Metadata Property 1: <input type="text" name="property1"></label><br>
+    <label>Metadata Property 2: <input type="text" name="property2"></label>
+  </fieldset>
+
+  <fieldset>
+    <legend>Payment Detail</legend>
+    <label>Card Token: <input type="text" name="card_token"></label><br>
+    <label>External Payment Method: <input type="text" name="external_payment_method"></label><br>
+    <label>Payment Method: <input type="text" name="payment_method" value="apple_pay"></label><br>
+    <label>Gateway ID: <input type="number" name="payment_gateway"></label><br>
+    <label>Gateway Group: <input type="number" name="payment_gateway_group"></label><br>
+    <label>Payment Failed URL: <input type="text" name="payment_failed_url"></label>
+  </fieldset>
+
+  <fieldset>
+    <legend>Misc</legend>
+    <label>Shipping Method ID: <input type="number" name="shipping_method"></label><br>
+    <label>Success URL: <input type="text" name="success_url"></label><br>
+    <label>Vouchers (comma separated): <input type="text" name="vouchers"></label>
+  </fieldset>
+
+  <button type="submit">Create Order</button>
 </form>
+
 
 <hr>
 
@@ -203,60 +270,93 @@
   document.getElementById('orderForm').addEventListener('submit', function (e) {
     e.preventDefault();
     const form = e.target;
-    const address = {
-      first_name: form.first_name.value,
-      last_name: form.last_name.value,
-      country: form.country.value,
-      line1: form.line1.value,
-      state: form.state.value,
-      postcode: form.postcode.value,
-      line4: form.line4.value,
-      phone_number: form.address_phone.value
+    const sameBilling = form.billing_same_as_shipping_address.checked;
+
+    const shipping_address = {
+      country: form.s_country.value,
+      first_name: form.s_first_name.value,
+      last_name: form.s_last_name.value,
+      line1: form.s_line1.value,
+      line2: form.s_line2.value,
+      line3: form.s_line3.value,
+      line4: form.s_line4.value,
+      state: form.s_state.value,
+      postcode: form.s_postcode.value,
+      phone_number: form.s_phone_number.value,
+      notes: form.s_notes.value,
+      is_default_for_shipping: false,
+      is_default_for_billing: false
     };
 
+    const billing_address = sameBilling
+      ? shipping_address
+      : {
+          country: form.b_country.value,
+          first_name: form.b_first_name.value,
+          last_name: form.b_last_name.value,
+          line1: form.b_line1.value,
+          line2: form.b_line2.value,
+          line3: form.b_line3.value,
+          line4: form.b_line4.value,
+          state: form.b_state.value,
+          postcode: form.b_postcode.value,
+          phone_number: form.b_phone_number.value,
+          notes: form.b_notes.value,
+          is_default_for_shipping: false,
+          is_default_for_billing: false
+        };
+
     const payload = {
-      lines: [
-        {
-          package_id: parseInt(form.package_id.value),
-          quantity: parseInt(form.quantity.value)
-        }
-      ],
       user: {
         email: form.email.value,
         first_name: form.first_name.value,
         last_name: form.last_name.value,
         phone_number: form.phone_number.value,
-        ip: "0.0.0.0"
+        ip: form.ip.value,
+        language: form.language.value,
+        user_agent: form.user_agent.value,
+        accepts_marketing: form.accepts_marketing.checked
       },
-      attribution: {
-        funnel: "M funnel",
-        utm_source: "PA utm_source",
-        utm_medium: "PA utm_medium",
-        utm_campaign: "PA utm_campaign",
-        utm_term: "PA utm_term",
-        utm_content: "PA utm_content",
-        gclid: "PA gclid",
-        metadata: {
-          attribution_meta_decimal: "0.01",
-          attribution_meta_integer: "1000",
-          attribution_meta_text: "Han"
-        },
-        affiliate: "PA affiliate",
-        subaffiliate1: "PA subaffiliate1",
-        subaffiliate2: "PA subaffiliate2",
-        subaffiliate3: "PA subaffiliate3",
-        subaffiliate4: "PA subaffiliate4",
-        subaffiliate5: "PA subaffiliate5",
-        agent: 1
-      },
-      payment_detail: {
-        payment_method: "card_token",
-        card_token: form.card_token.value
-      },
-      shipping_address: address,
-      billing_address: address,
+      shipping_address,
+      billing_address,
+      billing_same_as_shipping_address: sameBilling,
+      use_default_billing_address: false,
+      use_default_shipping_address: false,
       shipping_method: parseInt(form.shipping_method.value),
-      success_url: "http://sandbox.localhost:3333/"
+      success_url: form.success_url.value,
+      payment_failed_url: form.payment_failed_url.value,
+      payment_detail: {
+        card_token: form.card_token.value,
+        external_payment_method: form.external_payment_method.value,
+        payment_gateway: parseInt(form.payment_gateway.value),
+        payment_gateway_group: parseInt(form.payment_gateway_group.value),
+        payment_method: form.payment_method.value
+      },
+      lines: [{
+        package_id: parseInt(form.package_id.value),
+        quantity: parseInt(form.quantity.value),
+        is_upsell: form.is_upsell.checked
+      }],
+      attribution: {
+        funnel: form.funnel.value,
+        utm_source: form.utm_source.value,
+        utm_medium: form.utm_medium.value,
+        utm_campaign: form.utm_campaign.value,
+        utm_term: form.utm_term.value,
+        utm_content: form.utm_content.value,
+        gclid: form.gclid.value,
+        affiliate: form.affiliate.value,
+        subaffiliate1: form.subaffiliate1.value,
+        subaffiliate2: form.subaffiliate2.value,
+        subaffiliate3: form.subaffiliate3.value,
+        subaffiliate4: form.subaffiliate4.value,
+        subaffiliate5: form.subaffiliate5.value,
+        metadata: {
+          property1: form.property1.value || null,
+          property2: form.property2.value || null
+        }
+      },
+      vouchers: form.vouchers.value.split(',').map(v => v.trim()).filter(Boolean)
     };
 
     fetch('https://campaigns.anuwatwork.com/api/v1/orders/', {
@@ -267,14 +367,17 @@
       },
       body: JSON.stringify(payload)
     })
-    .then(res => res.json())
+    .then(res => {
+      if (!res.ok) throw new Error('HTTP error ' + res.status);
+      return res.json();
+    })
     .then(data => {
-      console.log('Order Success:', data);
-      alert('Order submitted!');
+      console.log('Order success:', data);
+      alert('Order created successfully!');
     })
     .catch(err => {
       console.error(err);
-      alert('Failed to submit order.');
+      alert('Failed to create order.');
     });
   });
 
