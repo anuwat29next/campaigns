@@ -1,139 +1,157 @@
 <html>
-  
-  <script async src="https://campaigns.anuwatwork.com/js/v1/campaign/"></script>
-  <script>
-      window.addEventListener('load', function () {
-          nextCampaign.config({
-              apiKey: "g8ep0a5wYUIqOkaYDJcHOWyqk1et813Pj5OxV48X",
-          })
-          nextCampaign.event('page_view', {
-              title: document.title,
-              url: window.location.href
-          });
-      });
-  </script>
-  <button id="submitBtn">Submit Order</button>
+<head>
+  <title>Campaign Order Page</title>
+</head>
+<body>
 
-  <label for="orderRefId">Order Ref ID:</label>
-<input type="text" id="orderRefId" placeholder="Enter order_ref_id">
+<!-- Page View Tracking -->
+<script async src="https://campaigns.anuwatwork.com/js/v1/campaign/"></script>
+<script>
+  window.addEventListener('load', function () {
+    nextCampaign.config({
+      apiKey: "g8ep0a5wYUIqOkaYDJcHOWyqk1et813Pj5OxV48X",
+    });
+    nextCampaign.event('page_view', {
+      title: document.title,
+      url: window.location.href
+    });
+  });
+</script>
+
+<h2>Create Cart</h2>
+<form id="cartForm">
+  <label>Email: <input type="email" name="email" required></label><br>
+  <label>First Name: <input type="text" name="first_name" required></label><br>
+  <label>Last Name: <input type="text" name="last_name" required></label><br>
+  <label>Phone: <input type="text" name="phone_number" required></label><br>
+  <label>Package ID: <input type="number" name="package_id" required></label><br>
+  <label>Quantity: <input type="number" name="quantity" value="1" required></label><br>
+  <button type="submit">Create Cart</button>
+</form>
+
+<hr>
+
+<h2>Submit Order</h2>
+<form id="orderForm">
+  <!-- User Info -->
+  <label>Email: <input type="email" name="email" required></label><br>
+  <label>First Name: <input type="text" name="first_name" required></label><br>
+  <label>Last Name: <input type="text" name="last_name" required></label><br>
+  <label>Phone: <input type="text" name="phone_number" required></label><br>
+
+  <!-- Package Info -->
+  <label>Package ID: <input type="number" name="package_id" required></label><br>
+  <label>Quantity: <input type="number" name="quantity" value="1" required></label><br>
+
+  <!-- Payment -->
+  <label>Card Token: <input type="text" name="card_token" required></label><br>
+
+  <!-- Address -->
+  <label>Shipping Method ID: <input type="number" name="shipping_method" value="1" required></label><br>
+  <label>Country: <input type="text" name="country" value="US"></label><br>
+  <label>Line1: <input type="text" name="line1" required></label><br>
+  <label>State: <input type="text" name="state" required></label><br>
+  <label>Postcode: <input type="text" name="postcode" required></label><br>
+  <label>City (Line4): <input type="text" name="line4" required></label><br>
+  <label>Phone: <input type="text" name="address_phone" required></label><br>
+
+  <button type="submit">Submit Order</button>
+</form>
+
+<hr>
+
+<h2>Submit Upsell</h2>
+<label>Order Ref ID: <input type="text" id="orderRefId" required></label><br>
+<label>Package ID: <input type="number" id="upsellPackageId" value="1" required></label><br>
 <button id="submitUpsellBtn">Submit Upsell</button>
 
-  <button id="createCaret">Create Cart</button>
+<script>
+  const API_KEY = 'g8ep0a5wYUIqOkaYDJcHOWyqk1et813Pj5OxV48X';
 
-
-  <script>
-  document.getElementById('createCaret').addEventListener('click', function () {
+  document.getElementById('cartForm').addEventListener('submit', function (e) {
+    e.preventDefault();
+    const form = e.target;
     const payload = {
-   "user": {
-       "email": "anuwat209@29next.com",
-       "first_name": "Man",
-       "last_name": "Campaigns",
-       "phone_number": "+15732020209"
-    //    ,"language": "1234"
-    },
-    "lines": [
-{
-            "package_id":1,
-            "quantity": 2
+      user: {
+        email: form.email.value,
+        first_name: form.first_name.value,
+        last_name: form.last_name.value,
+        phone_number: form.phone_number.value
+      },
+      lines: [
+        {
+          package_id: parseInt(form.package_id.value),
+          quantity: parseInt(form.quantity.value)
         }
-    ],
-    // "vouchers": ["FREE_SHIPPING"],
-    "attribution": {
-        "funnel": "M funnel",
-        "utm_source": "PA utm_source",
-        "utm_medium": "PA utm_medium",
-        "utm_campaign": "PA utm_campaign",
-        "utm_term": "PA utm_term",
-        "utm_content": "PA utm_content",
-        "gclid": "PA gclid",
-        "metadata": {
-        "attribution_meta_decimal": "0.01",
-        "attribution_meta_integer": "1000",
-        "attribution_meta_text": "Han"
+      ],
+      attribution: {
+        funnel: "M funnel",
+        utm_source: "PA utm_source",
+        utm_medium: "PA utm_medium",
+        utm_campaign: "PA utm_campaign",
+        utm_term: "PA utm_term",
+        utm_content: "PA utm_content",
+        gclid: "PA gclid",
+        metadata: {
+          attribution_meta_decimal: "0.01",
+          attribution_meta_integer: "1000",
+          attribution_meta_text: "Han"
         },
-        "affiliate": "PA affiliate",
-        "subaffiliate1": "PA subaffiliate1",
-        "subaffiliate2": "PA subaffiliate2",
-        "subaffiliate3": "PA subaffiliate3",
-        "subaffiliate4": "PA subaffiliate4",
-        "subaffiliate5": "PA subaffiliate5",
-        "agent": 1
-    }
-};
+        affiliate: "PA affiliate",
+        subaffiliate1: "PA subaffiliate1",
+        subaffiliate2: "PA subaffiliate2",
+        subaffiliate3: "PA subaffiliate3",
+        subaffiliate4: "PA subaffiliate4",
+        subaffiliate5: "PA subaffiliate5",
+        agent: 1
+      }
+    };
+
     fetch('https://campaigns.anuwatwork.com/api/v1/carts/', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': 'g8ep0a5wYUIqOkaYDJcHOWyqk1et813Pj5OxV48X' // Replace with your actual token
+        'Authorization': API_KEY
       },
       body: JSON.stringify(payload)
     })
-    .then(response => {
-      if (!response.ok) {
-        throw new Error('HTTP error ' + response.status);
-      }
-      return response.json();
-    })
+    .then(res => res.json())
     .then(data => {
-      console.log('Success:', data);
-      alert('Order submitted!');
+      console.log('Cart Success:', data);
+      alert('Cart created!');
     })
-    .catch(error => {
-      console.error('Error:', error);
-      alert('Failed to submit order.');
+    .catch(err => {
+      console.error(err);
+      alert('Failed to create cart.');
     });
   });
-</script>
 
-  <script>
-  document.getElementById('submitUpsellBtn').addEventListener('click', function () {
-    const orderRefId = document.getElementById('orderRefId').value.trim();
-
-    if (!orderRefId) {
-      alert('Please enter a valid order_ref_id.');
-      return;
-    }
-
-    const url = `https://campaigns.anuwatwork.com/api/v1/orders/${encodeURIComponent(orderRefId)}/upsells/`;
-
-    const payload = {
-      lines: [{ package_id: 1 }]
+  document.getElementById('orderForm').addEventListener('submit', function (e) {
+    e.preventDefault();
+    const form = e.target;
+    const address = {
+      first_name: form.first_name.value,
+      last_name: form.last_name.value,
+      country: form.country.value,
+      line1: form.line1.value,
+      state: form.state.value,
+      postcode: form.postcode.value,
+      line4: form.line4.value,
+      phone_number: form.address_phone.value
     };
 
-    fetch(url, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': 'g8ep0a5wYUIqOkaYDJcHOWyqk1et813Pj5OxV48X' // Replace with your real token
-      },
-      body: JSON.stringify(payload)
-    })
-    .then(response => {
-      if (!response.ok) {
-        throw new Error(`HTTP error: ${response.status}`);
-      }
-      return response.json();
-    })
-    .then(data => {
-      console.log('Upsell success:', data);
-      alert('Upsell submitted!');
-    })
-    .catch(error => {
-      console.error('Upsell error:', error);
-      alert('Failed to submit upsell.');
-    });
-  });
-</script>
-
-<script>
-  document.getElementById('submitBtn').addEventListener('click', function () {
     const payload = {
-      lines: [{ package_id: 1, quantity: 3 }],
+      lines: [
+        {
+          package_id: parseInt(form.package_id.value),
+          quantity: parseInt(form.quantity.value)
+        }
+      ],
       user: {
-        email: "anuwat217@29next.com",
-        first_name: "M001",
-        last_name: "Campaign#5",
-        phone_number: "+15732020217",
+        email: form.email.value,
+        first_name: form.first_name.value,
+        last_name: form.last_name.value,
+        phone_number: form.phone_number.value,
         ip: "0.0.0.0"
       },
       attribution: {
@@ -159,29 +177,11 @@
       },
       payment_detail: {
         payment_method: "card_token",
-        card_token: "4s6P5V0dzdZyWSxZQszUxYAPRhB"
+        card_token: form.card_token.value
       },
-      shipping_address: {
-        first_name: "test",
-        last_name: "test",
-        country: "US",
-        line1: "4389 Marigold Lane",
-        state: "FL",
-        postcode: "33134",
-        line4: "Coral Gables",
-        phone_number: "+12025550112"
-      },
-      shipping_method: 1,
-      billing_address: {
-        first_name: "test",
-        last_name: "test",
-        country: "US",
-        line1: "4389 Marigold Lane",
-        state: "FL",
-        postcode: "33134",
-        line4: "Coral Gables",
-        phone_number: "+12025550112"
-      },
+      shipping_address: address,
+      billing_address: address,
+      shipping_method: parseInt(form.shipping_method.value),
       success_url: "http://sandbox.localhost:3333/"
     };
 
@@ -189,24 +189,52 @@
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': 'g8ep0a5wYUIqOkaYDJcHOWyqk1et813Pj5OxV48X' // Replace with your actual token
+        'Authorization': API_KEY
       },
       body: JSON.stringify(payload)
     })
-    .then(response => {
-      if (!response.ok) {
-        throw new Error('HTTP error ' + response.status);
-      }
-      return response.json();
-    })
+    .then(res => res.json())
     .then(data => {
-      console.log('Success:', data);
+      console.log('Order Success:', data);
       alert('Order submitted!');
     })
-    .catch(error => {
-      console.error('Error:', error);
+    .catch(err => {
+      console.error(err);
       alert('Failed to submit order.');
     });
   });
+
+  document.getElementById('submitUpsellBtn').addEventListener('click', function () {
+    const orderRefId = document.getElementById('orderRefId').value.trim();
+    const packageId = parseInt(document.getElementById('upsellPackageId').value);
+
+    if (!orderRefId || !packageId) {
+      alert("Please provide valid Order Ref ID and Package ID.");
+      return;
+    }
+
+    const payload = {
+      lines: [{ package_id: packageId }]
+    };
+
+    fetch(`https://campaigns.anuwatwork.com/api/v1/orders/${encodeURIComponent(orderRefId)}/upsells/`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': API_KEY
+      },
+      body: JSON.stringify(payload)
+    })
+    .then(res => res.json())
+    .then(data => {
+      console.log('Upsell Success:', data);
+      alert('Upsell submitted!');
+    })
+    .catch(err => {
+      console.error(err);
+      alert('Failed to submit upsell.');
+    });
+  });
 </script>
+</body>
 </html>
