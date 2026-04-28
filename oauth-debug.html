@@ -3,6 +3,25 @@
 <head>
   <meta charset="UTF-8">
   <title>OAuth 2.0 Debugger</title>
+  <!--
+    USAGE
+    ─────────────────────────────────────────────────────────────────
+    1. FORM (default)
+       Open the file with a ?store= param to pre-fill the authorize URI.
+       Example: oauth-debug.html?store=sandbox.anuwatwork.com
+
+    2. WELCOME PAGE
+       Shown when the URL contains exactly ?token=...&store=...
+       Used as the app's redirect landing page after OAuth completes.
+       Example: oauth-debug.html?token=abc123&store=sandbox.anuwatwork.com
+
+    3. RESULT PAGE
+       Shown when the URL contains ?authorize_result (plus any other params).
+       Set your app's Redirect URI to point here with ?authorize_result appended.
+       Example: oauth-debug.html?authorize_result&code=xyz&state=abc
+       Shows green "Success" when no error param is present, red "Error" otherwise.
+    ─────────────────────────────────────────────────────────────────
+  -->
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body { font-family: sans-serif; background: #f4f4f4; padding: 40px 20px; }
@@ -93,7 +112,21 @@
   <script>
     const params = new URLSearchParams(window.location.search);
 
-    if (params.has('authorize_result')) {
+    if (params.has('token') && params.has('store') && params.size === 2) {
+      document.getElementById('form-view').style.display = 'none';
+      document.getElementById('result-view').style.display = 'block';
+
+      const badge = document.getElementById('result-badge');
+      badge.textContent = 'Welcome';
+      badge.className = 'result-badge success';
+
+      const tbody = document.getElementById('result-body');
+      params.forEach((value, key) => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `<th>${key}</th><td>${value}</td>`;
+        tbody.appendChild(tr);
+      });
+    } else if (params.has('authorize_result')) {
       document.getElementById('form-view').style.display = 'none';
       document.getElementById('result-view').style.display = 'block';
 
