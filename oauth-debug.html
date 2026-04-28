@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>OAuth 2.0 Debugger</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: sans-serif; background: #f4f4f4; padding: 40px 20px; }
+    .card { background: #fff; max-width: 600px; margin: 0 auto; padding: 32px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,.1); }
+    h1 { font-size: 1.4rem; margin-bottom: 24px; color: #333; }
+    .field { margin-bottom: 16px; }
+    label { display: block; font-size: .85rem; font-weight: 600; color: #555; margin-bottom: 4px; }
+    input[type="text"] { width: 100%; padding: 8px 12px; border: 1px solid #ccc; border-radius: 4px; font-size: .95rem; }
+    .radio-group { display: flex; gap: 16px; margin-top: 4px; }
+    .radio-group label { font-weight: normal; display: flex; align-items: center; gap: 4px; cursor: pointer; }
+    .btn { display: inline-block; margin-top: 8px; padding: 10px 24px; background: #4a90e2; color: #fff; border: none; border-radius: 4px; font-size: 1rem; cursor: pointer; text-decoration: none; }
+    .btn:hover { background: #357abd; }
+    .store-badge { font-size: .8rem; color: #888; margin-bottom: 20px; }
+    .store-badge span { font-weight: 600; color: #333; }
+    .preview { margin-top: 24px; padding: 12px; background: #f0f4ff; border: 1px solid #c5d3f5; border-radius: 4px; word-break: break-all; font-size: .82rem; color: #333; }
+    .preview strong { display: block; margin-bottom: 6px; font-size: .8rem; color: #666; }
+    .preview a { color: #4a90e2; text-decoration: none; }
+    .preview a:hover { text-decoration: underline; }
+    .result { max-width: 600px; margin: 0 auto; }
+    .result-badge { display: inline-block; padding: 4px 12px; border-radius: 12px; font-size: .85rem; font-weight: 600; margin-bottom: 20px; }
+    .result-badge.success { background: #d4edda; color: #155724; }
+    .result-badge.error   { background: #f8d7da; color: #721c24; }
+    .result-table { width: 100%; border-collapse: collapse; margin-top: 8px; }
+    .result-table th, .result-table td { text-align: left; padding: 8px 12px; border-bottom: 1px solid #eee; font-size: .9rem; }
+    .result-table th { width: 160px; color: #666; font-weight: 600; }
+    .result-table td { word-break: break-all; color: #333; }
+  </style>
+</head>
+<body>
+  <div id="result-view" class="card result" style="display:none">
+    <h1>OAuth 2.0 Result</h1>
+    <span id="result-badge" class="result-badge"></span>
+    <table class="result-table">
+      <tbody id="result-body"></tbody>
+    </table>
+  </div>
+
+  <div id="form-view" class="card">
+    <h1>OAuth 2.0 Debugger</h1>
+    <p class="store-badge">Store: <span id="store-label">—</span></p>
+
+    <div class="field">
+      <label>Authorize URI</label>
+      <input type="text" id="authorize_uri">
+    </div>
+    <div class="field">
+      <label>Redirect URI</label>
+      <input type="text" id="redirect_uri" value="https://oauthdebugger.com/debug">
+    </div>
+    <div class="field">
+      <label>Client ID</label>
+      <input type="text" id="client_id">
+    </div>
+    <div class="field">
+      <label>Scope</label>
+      <input type="text" id="scope" value="read write">
+    </div>
+    <div class="field">
+      <label>State</label>
+      <input type="text" id="state" value="abc123">
+    </div>
+    <div class="field">
+      <label>Nonce</label>
+      <input type="text" id="nonce">
+    </div>
+    <div class="field">
+      <label>Response Type</label>
+      <div class="radio-group">
+        <label><input type="radio" name="response_type" value="code" checked> code</label>
+      </div>
+    </div>
+    <div class="field">
+      <label>Response Mode</label>
+      <div class="radio-group">
+        <label><input type="radio" name="response_mode" value="query" checked> query</label>
+      </div>
+    </div>
+
+    <div class="preview">
+      <strong>Authorization URL</strong>
+      <a id="preview-url" href="#" target="_blank"></a>
+    </div>
+
+    <button class="btn" onclick="sendRequest()">Send Request</button>
+  </div>
+  </div>
+
+  <script>
+    const params = new URLSearchParams(window.location.search);
+
+    if (params.has('authorize_result')) {
+      document.getElementById('form-view').style.display = 'none';
+      document.getElementById('result-view').style.display = 'block';
+
+      const isError = params.has('error');
+      const badge = document.getElementById('result-badge');
+      badge.textContent = isError ? 'Error' : 'Success';
+      badge.className = `result-badge ${isError ? 'error' : 'success'}`;
+
+      const tbody = document.getElementById('result-body');
+      params.forEach((value, key) => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `<th>${key}</th><td>${value}</td>`;
+        tbody.appendChild(tr);
+      });
+    } else {
+      const store = params.get('store') || '';
+      if (store) {
+        document.getElementById('store-label').textContent = store;
+        document.getElementById('authorize_uri').value = `https://${store}/oauth2/authorize/`;
+      }
+      updatePreview();
+    }
+
+    function buildAuthUrl() {
+      const authorizeUri = document.getElementById('authorize_uri').value;
+      if (!authorizeUri) return '';
+
+      const p = new URLSearchParams({
+        client_id:     document.getElementById('client_id').value,
+        redirect_uri:  document.getElementById('redirect_uri').value,
+        scope:         document.getElementById('scope').value,
+        response_type: document.querySelector('input[name="response_type"]:checked').value,
+        response_mode: document.querySelector('input[name="response_mode"]:checked').value,
+        state:         document.getElementById('state').value,
+        nonce:         document.getElementById('nonce').value,
+      });
+
+      return `${authorizeUri}?${p.toString()}`;
+    }
+
+    function updatePreview() {
+      const url = buildAuthUrl();
+      const el = document.getElementById('preview-url');
+      el.textContent = url || '—';
+      el.href = url || '#';
+    }
+
+    function sendRequest() {
+      window.location.href = buildAuthUrl();
+    }
+
+    document.querySelectorAll('input').forEach(el => el.addEventListener('input', updatePreview));
+    document.querySelectorAll('input[type="radio"]').forEach(el => el.addEventListener('change', updatePreview));
+  </script>
+</body>
+</html>
