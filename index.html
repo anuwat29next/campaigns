@@ -1,213 +1,370 @@
-<html>
-  
-  
-  
-  <button id="submitBtn">Submit Order</button>
+<!DOCTYPE html>
+<html lang="en">
 
-  <label for="orderRefId">Order Ref ID:</label>
-<input type="text" id="orderRefId" placeholder="Enter order_ref_id">
-<button id="submitUpsellBtn">Submit Upsell</button>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Demo Next Payment Form</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Source+Code+Pro:ital,wght@0,200..900;1,200..900&family=Space+Mono:ital,wght@0,400;0,700;1,400;1,700&display=swap"
+    rel="stylesheet">
+  <script async defer src="https://buttons.github.io/buttons.js"></script>
+  <style>
+    body {
+      background-color: #f8f9fa;
+      min-height: 100vh;
+    }
 
-  <button id="createCaret">Create Cart</button>
-<script async src="https://campaigns.anuwatwork.com/js/v1/campaign/"></script>
-<script>
-    window.addEventListener('load', function () {
-        nextCampaign.config({
-            apiKey: "Yoreiknv4FhDZH8eyjnuHUIdoMbCqG5DbI96C5XM",
-        })
-        nextCampaign.event('page_view', {
-            title: document.title,
-            url: window.location.href
+    .payment-container {
+      max-width: 32rem;
+      background: white;
+      border-radius: 1rem;
+    }
+
+    #id_card_number,
+    #id_card_cvv {
+      height: 2.375rem;
+      padding: 0px;
+    }
+
+    .info-card {
+      background-color: #f8f9fa;
+      border-radius: 0.5rem;
+      padding: 1rem;
+    }
+
+    .text-result {
+      font-family: 'Source Code Pro', monospace;
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .form-control.active {
+      color: var(--bs-body-color);
+      background-color: var(--bs-body-bg);
+      border-color: #86b7fe;
+      outline: 0;
+      box-shadow: 0 0 0 .25rem rgba(13, 110, 253, .25);
+    }
+  </style>
+</head>
+
+<body class="d-flex align-items-center justify-content-center p-4">
+
+  <section>
+    <div class="payment-container p-4">
+      <h3 class="text-center fw-semibold mb-4">Demo Next Payment</h3>
+
+      <div class="alert alert-primary">Use the form below to create a test card token.</div>
+
+      <div class="alert alert-danger d-none" id="payment-error-block"></div>
+
+      <form id="payment-form" onsubmit='submitPaymentForm(); return false;' novalidate>
+        <div class="mb-3">
+          <label class="form-label fw-medium text-nowrap" for="id_card_number">Card Number</label>
+          <div id="id_card_number" class="form-control"></div>
+          <div class="invalid-feedback"></div>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label fw-medium text-nowrap" for="id_cardholder_name">Cardholder Name</label>
+          <input id="id_cardholder_name" name="cc-name" autocomplete="cc-name" type="text" placeholder="Full Name on Card"
+            class="form-control">
+          <div class="invalid-feedback"></div>
+        </div>
+
+        <div class="row mb-3">
+          <div class="col-4">
+            <label class="form-label fw-medium text-nowrap" for="id_card_exp_month">Expiry Month</label>
+            <select id="id_card_exp_month" name="expiry_month" autocomplete="cc-exp-month" required class="form-select">
+              <option value="" selected disabled>MM</option>
+            </select>
+            <div class="invalid-feedback"></div>
+          </div>
+
+          <div class="col-4">
+            <label class="form-label fw-medium text-nowrap" for="id_card_exp_year">Expiry Year</label>
+            <select id="id_card_exp_year" name="expiry_year" autocomplete="cc-exp-year" required class="form-select">
+              <option value="" selected disabled>YY</option>
+            </select>
+            <div class="invalid-feedback"></div>
+          </div>
+          <div class="col-4">
+            <label class="form-label fw-medium text-nowrap" for="id_card_cvv">Security Code</label>
+            <div id="id_card_cvv" class="form-control"></div>
+            <div class="invalid-feedback"></div>
+          </div>
+        </div>
+
+
+        <button type="submit" data-loading-text="Processing..." class="btn btn-primary w-100 fw-medium" disabled>
+          Pay Now
+        </button>
+      </form>
+
+      <div class="info-card mt-4 d-none" id="payment-result">
+        <h5 class="h5 fw-medium mb-3">Payment Result</h5>
+        <p class="small text-muted mb-2">This token is used as a <code>card_token</code> payment method with the Orders
+          Admin API. Refer to the <a
+            href="https://developers.29next.com/docs/api/admin/reference/#/operations/ordersCreate" target="_blank"
+            rel="noopener">API documentation</a> for implementation details.</p>
+        <div class="mb-1">
+          <div class="d-flex justify-content-between align-items-center">
+            <span class="small fw-medium">Card Token : </span>
+            <span class="text-result clipboard" id="card-token"></span>
+          </div>
+        </div>
+        <div class="mb-1">
+          <div class="d-flex justify-content-between align-items-center">
+            <span class="small fw-medium">Card Number : </span>
+            <span class="text-result clipboard" id="card-number"></span>
+          </div>
+        </div>
+        <div class="mb-1">
+          <div class="d-flex justify-content-between align-items-center">
+            <span class="small fw-medium">First Six Digits : </span>
+            <span class="text-result clipboard" id="first-six"></span>
+          </div>
+        </div>
+        <div class="mb-1">
+          <div class="d-flex justify-content-between align-items-center">
+            <span class="small fw-medium">Last Four Digits : </span>
+            <span class="text-result clipboard" id="last-four"></span>
+          </div>
+        </div>
+        <div class="mb-1">
+          <div class="d-flex justify-content-between align-items-center">
+            <span class="small fw-medium">Card Type : </span>
+            <span class="text-result clipboard" id="card-type"></span>
+          </div>
+        </div>
+        <div class="mb-1">
+          <div class="d-flex justify-content-between align-items-center">
+            <span class="small fw-medium">Fingerprint : </span>
+            <span class="text-result clipboard" id="fingerprint"></span>
+          </div>
+        </div>
+        <div class="mb-1">
+          <div>
+            <span class="small fw-medium">Metadata : </span>
+            <pre class="text-result clipboard" id="metadata" style="white-space: pre-wrap; word-break: break-all;"></pre>
+          </div>
+        </div>
+        <p class="text-muted small mb-0 text-end">See browser console for full payment method data.</p>
+      </div>
+
+      <div class="info-card mt-4" id="test-data">
+        <h5 class="fw-medium mb-3">Test Data</h5>
+        <p class="small text-muted mb-2">Use the example card numbers below with any name, a future expiration date, and
+          a CVV to generate a test payment method token.</p>
+
+        <div class="mb-2">
+          <div class="d-flex justify-content-between align-items-center">
+            <span class="small fw-medium">Valid Card Number : </span>
+            <span class="text-result clipboard">4111 1111 1111 1111</span>
+          </div>
+        </div>
+
+        <div class="mb-0">
+          <div class="d-flex justify-content-between align-items-center">
+            <span class="small fw-medium">Invalid Card : </span>
+            <span class="text-result clipboard">4223 2332 3232 3233</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+    <div class="text-end mt-3" style="height: 16px;">
+      <a class="github-button" href="https://github.com/29next/demo-iframe-payment-form"
+        data-color-scheme="no-preference: dark; light: dark; dark: dark;" data-size="large"
+        aria-label="Source Code 29next/demo-iframe-payment-form on GitHub">Source Code</a>
+    </div>
+  </section>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.11/clipboard.min.js"></script>
+  <script src="https://sandbox.anuwatwork.com/js/v1/payment.js"></script>
+  <script>
+    new ClipboardJS('.clipboard', {
+      text: trigger => trigger.textContent,
+      action: () => 'copy'
+    });
+
+    const clipboardHandlerSuccess = handleCopy('Copied!');
+    const clipboardHandlerError = handleCopy('Copy failed');
+    new ClipboardJS('.clipboard', {
+      text: trigger => trigger.textContent,
+      action: () => 'copy'
+    }).on('success', clipboardHandlerSuccess)
+      .on('error', clipboardHandlerError);
+
+    function handleCopy(message) {
+      return function (e) {
+        e.clearSelection?.();
+
+        const el = e.trigger;
+        clearTimeout(el.timeoutId);
+
+        if (!el.originalText) el.originalText = el.textContent;
+
+        el.textContent = message;
+        el.timeoutId = setTimeout(() => {
+          el.textContent = el.originalText;
+          el.timeoutId = null;
+        }, 200);
+      };
+    }
+  </script>
+  <script>
+    // generate options for expiry month and year
+    const monthSelect = document.getElementById('id_card_exp_month');
+    const yearSelect = document.getElementById('id_card_exp_year');
+    const currentYear = new Date().getFullYear();
+    for (let i = 0; i < 10; i++) {
+      const option = document.createElement('option');
+      const year = (currentYear + i).toString().slice(-2); // Get last two digits of the year
+      option.value = year;
+      option.textContent = year;
+      yearSelect.appendChild(option);
+    }
+    for (let i = 1; i <= 12; i++) {
+      const option = document.createElement('option');
+      const month = i.toString().padStart(2, '0'); // Pad single digit months with leading zero
+      option.value = month;
+      option.textContent = month;
+      monthSelect.appendChild(option);
+    }
+  </script>
+  <script>
+    const submitButton = document.querySelector('#payment-form button[type="submit"]');
+
+    const payment = new NextPayment({
+      numberEl: "id_card_number",
+      cvvEl: "id_card_cvv",
+    });
+
+    function fieldSelectorForAttribute(attribute) {
+      if (attribute === 'number') return '#id_card_number';
+      if (attribute === 'cvv') return '#id_card_cvv';
+      if (attribute === 'month') return '#id_card_exp_month';
+      if (attribute === 'year') return '#id_card_exp_year';
+      if (attribute === 'full_name') return '#id_cardholder_name';
+      return null;
+    }
+
+    function setFieldInvalid(selector, message) {
+      let el = document.querySelector(selector);
+      if (!el) return;
+      el.classList.add('is-invalid');
+      let feedbackEl = document.querySelector(`${selector} + .invalid-feedback`);
+      if (feedbackEl) feedbackEl.textContent = message;
+    }
+
+    payment.onValidation = (payload) => {
+      document.querySelectorAll('#payment-form .is-invalid').forEach(el => el.classList.remove('is-invalid'));
+      (payload.errors || []).forEach(err => {
+        let selector = fieldSelectorForAttribute(err.attribute);
+        if (selector) setFieldInvalid(selector, err.message);
+      });
+    };
+
+    payment.onError = (error) => {
+      let errorBlock = document.getElementById("payment-error-block");
+      errorBlock.classList.add('d-none');
+
+      let errorHtml = '';
+      if (typeof error === 'string') {
+        errorHtml = `${error}<br/>`;
+      } else if (error.errors && Array.isArray(error.errors)) {
+        error.errors.forEach(err => {
+          let selector = fieldSelectorForAttribute(err.attribute);
+          if (selector) {
+            setFieldInvalid(selector, err.message);
+          } else {
+            errorHtml += `${err.message}<br/>`;
+          }
         });
-    });
-</script>
-  <script>
-  document.getElementById('createCaret').addEventListener('click', function () {
-    const payload = {
-   "user": {
-       "email": "anuwat209@29next.com",
-       "first_name": "Man",
-       "last_name": "Campaigns",
-       "phone_number": "+15732020209"
-    //    ,"language": "1234"
-    },
-    "lines": [
-{
-            "package_id":1,
-            "quantity": 2
+      } else if (error.message) {
+        errorHtml += `${error.message}<br/>`;
+      } else {
+        errorHtml = `${error.error??error}<br/>`;
+      }
+
+      submitButton.removeAttribute('disabled');
+      if (errorHtml) {
+        errorBlock.classList.remove('d-none');
+        errorBlock.innerHTML = errorHtml;
+      }
+
+      submitButton.textContent = submitButton.dataset.originalText || 'Pay Now';
+    };
+
+    payment.onReady = () => {
+      submitButton.removeAttribute('disabled');
+      payment.setFocus("number");
+    };
+
+    payment.onFieldStateChange = (payload) => {
+      const {action, field} = payload;
+      const fieldEl = document.querySelector(`#id_card_${field}`);
+      if (!fieldEl) return;
+      if (action === "focus") {
+        fieldEl.classList.add('active');
+      }
+      if (action === "blur") {
+        fieldEl.classList.remove('active');
+      }
+    }
+
+    async function submitPaymentForm() {
+      // Clear previous validation states
+      document.querySelectorAll('#payment-form .is-invalid').forEach(el => el.classList.remove('is-invalid'));
+
+      // disable the submit button and show loading text
+      submitButton.setAttribute('disabled', true);
+      submitButton.dataset.originalText = submitButton.textContent;
+      submitButton.textContent = submitButton.dataset.loadingText || 'Processing...';
+
+      try {
+        let full_name = document.querySelector('#id_cardholder_name').value;
+        let month = document.querySelector('#id_card_exp_month').value;
+        let year = document.querySelector('#id_card_exp_year').value;
+
+        const extraData = {
+          full_name,
+          month,
+          year: year ? new Date().getFullYear().toString().substring(0, 2) + year : null
+        };
+        const submitParams = {
+          metadata: {
+            //you metadata such as
+            order_id: 'ORDER-123' 
+          }
         }
-    ],
-    // "vouchers": ["FREE_SHIPPING"],
-    "attribution": {
-        "funnel": "M funnel",
-        "utm_source": "PA utm_source",
-        "utm_medium": "PA utm_medium",
-        "utm_campaign": "PA utm_campaign",
-        "utm_term": "PA utm_term",
-        "utm_content": "PA utm_content",
-        "gclid": "PA gclid",
-        "metadata": {
-        "attribution_meta_decimal": "0.01",
-        "attribution_meta_integer": "1000",
-        "attribution_meta_text": "Han"
-        },
-        "affiliate": "PA affiliate",
-        "subaffiliate1": "PA subaffiliate1",
-        "subaffiliate2": "PA subaffiliate2",
-        "subaffiliate3": "PA subaffiliate3",
-        "subaffiliate4": "PA subaffiliate4",
-        "subaffiliate5": "PA subaffiliate5",
-        "agent": 1
-    }
-};
-    fetch('https://campaigns.anuwatwork.com/api/v1/carts/', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': 'Yoreiknv4FhDZH8eyjnuHUIdoMbCqG5DbI96C5XM' // Replace with your actual token
-      },
-      body: JSON.stringify(payload)
-    })
-    .then(response => {
-      if (!response.ok) {
-        throw new Error('HTTP error ' + response.status);
+
+        const result = await payment.tokenize(extraData, submitParams);
+        const payment_method = result.tokenResponse.payment_method;
+
+        console.log('Payment Method Data:', payment_method);
+
+        // Populate the result section with payment method details
+        document.getElementById("card-token").textContent = payment_method.token;
+        document.getElementById("card-number").textContent = payment_method.number;
+        document.getElementById("first-six").textContent = payment_method.first_six_digits;
+        document.getElementById("last-four").textContent = payment_method.last_four_digits;
+        document.getElementById("card-type").textContent = payment_method.card_type;
+        document.getElementById("fingerprint").textContent = payment_method.fingerprint;
+        document.getElementById("metadata").textContent = JSON.stringify(payment_method.metadata, null, 2)
+        document.getElementById("payment-result").classList.remove('d-none');
+
+        // reset the submit button to its original text
+        submitButton.textContent = submitButton.dataset.originalText || 'Pay Now';
+      } catch (err) {
+        console.error('Tokenize failed:', err);
       }
-      return response.json();
-    })
-    .then(data => {
-      console.log('Success:', data);
-      alert('Cart submitted!');
-    })
-    .catch(error => {
-      console.error('Error:', error);
-      alert('Failed to submit order.');
-    });
-  });
-</script>
-
-  <script>
-  document.getElementById('submitUpsellBtn').addEventListener('click', function () {
-    const orderRefId = document.getElementById('orderRefId').value.trim();
-
-    if (!orderRefId) {
-      alert('Please enter a valid order_ref_id.');
-      return;
-    }
-
-    const url = `https://campaigns.anuwatwork.com/api/v1/orders/${encodeURIComponent(orderRefId)}/upsells/`;
-
-    const payload = {
-      lines: [{ package_id: 1 }]
     };
+  </script>
+</body>
 
-    fetch(url, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': 'Yoreiknv4FhDZH8eyjnuHUIdoMbCqG5DbI96C5XM' // Replace with your real token
-      },
-      body: JSON.stringify(payload)
-    })
-    .then(response => {
-      if (!response.ok) {
-        throw new Error(`HTTP error: ${response.status}`);
-      }
-      return response.json();
-    })
-    .then(data => {
-      console.log('Upsell success:', data);
-      alert('Upsell submitted!');
-    })
-    .catch(error => {
-      console.error('Upsell error:', error);
-      alert('Failed to submit upsell.');
-    });
-  });
-</script>
-
-<script>
-  document.getElementById('submitBtn').addEventListener('click', function () {
-    const payload = {
-      lines: [{ package_id: 1, quantity: 3 }],
-      user: {
-        email: "prime+2029+api+15@29next.com",
-        first_name: "M001",
-        last_name: "Campaign#5",
-        phone_number: "+15732020217",
-        ip: "0.0.0.0"
-      },
-      is_test:false,
-      attribution: {
-        funnel: "M funnel",
-        utm_source: "PA utm_source",
-        utm_medium: "PA utm_medium",
-        utm_campaign: "PA utm_campaign",
-        utm_term: "PA utm_term",
-        utm_content: "PA utm_content",
-        gclid: "PA gclid",
-        metadata: {
-          attribution_meta_decimal: "0.01",
-          attribution_meta_integer: "1000",
-          attribution_meta_text: "Han"
-        },
-        affiliate: "PA affiliate",
-        subaffiliate1: "PA subaffiliate1",
-        subaffiliate2: "PA subaffiliate2",
-        subaffiliate3: "PA subaffiliate3",
-        subaffiliate4: "PA subaffiliate4",
-        subaffiliate5: "PA subaffiliate5",
-        agent: 1
-      },
-      payment_detail: {
-        payment_method: "card_token",
-        card_token: "01K5ZX2TJAD7893NAQ9GHPZ686"
-      },
-      shipping_address: {
-        first_name: "test",
-        last_name: "test",
-        country: "US",
-        line1: "4389 Marigold Lane",
-        state: "FL",
-        postcode: "33134",
-        line4: "Coral Gables",
-        phone_number: "+12025550112"
-      },
-      shipping_method: 1,
-      billing_address: {
-        first_name: "test",
-        last_name: "test",
-        country: "US",
-        line1: "4389 Marigold Lane",
-        state: "FL",
-        postcode: "33134",
-        line4: "Coral Gables",
-        phone_number: "+12025550112"
-      },
-      success_url: "http://sandbox.localhost:3333/"
-    };
-
-    fetch('https://campaigns.anuwatwork.com/api/v1/orders/', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': 'Yoreiknv4FhDZH8eyjnuHUIdoMbCqG5DbI96C5XM' // Replace with your actual token
-      },
-      body: JSON.stringify(payload)
-    })
-    .then(response => {
-      if (!response.ok) {
-        throw new Error('HTTP error ' + response.status);
-      }
-      return response.json();
-    })
-    .then(data => {
-      console.log('Success:', data);
-      alert('Order submitted!');
-    })
-    .catch(error => {
-      console.error('Error:', error);
-      alert('Failed to submit order.');
-    });
-  });
-</script>
 </html>
