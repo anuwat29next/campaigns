@@ -270,6 +270,7 @@
     };
 
     payment.onError = (error) => {
+      console.log('on error: ', error);
       let errorBlock = document.getElementById("payment-error-block");
       errorBlock.classList.add('d-none');
 
@@ -317,7 +318,28 @@
       }
     }
 
-    async function submitPaymentForm() {
+    // submit() fires the tokenization request and returns immediately — the
+    // result arrives later via onTokenized (success) or onError (failure).
+    payment.onTokenized = (result) => {
+      const payment_method = result.tokenResponse.payment_method;
+
+      console.log('Payment Method Data:', payment_method);
+
+      // Populate the result section with payment method details
+      document.getElementById("card-token").textContent = payment_method.token;
+      document.getElementById("card-number").textContent = payment_method.number;
+      document.getElementById("first-six").textContent = payment_method.first_six_digits;
+      document.getElementById("last-four").textContent = payment_method.last_four_digits;
+      document.getElementById("card-type").textContent = payment_method.card_type;
+      document.getElementById("fingerprint").textContent = payment_method.fingerprint;
+      document.getElementById("metadata").textContent = JSON.stringify(payment_method.metadata, null, 2)
+      document.getElementById("payment-result").classList.remove('d-none');
+
+      // reset the submit button to its original text
+      submitButton.textContent = submitButton.dataset.originalText || 'Pay Now';
+    };
+
+    function submitPaymentForm() {
       // Clear previous validation states
       document.querySelectorAll('#payment-form .is-invalid').forEach(el => el.classList.remove('is-invalid'));
 
@@ -326,43 +348,23 @@
       submitButton.dataset.originalText = submitButton.textContent;
       submitButton.textContent = submitButton.dataset.loadingText || 'Processing...';
 
-      try {
-        let full_name = document.querySelector('#id_cardholder_name').value;
-        let month = document.querySelector('#id_card_exp_month').value;
-        let year = document.querySelector('#id_card_exp_year').value;
+      let full_name = document.querySelector('#id_cardholder_name').value;
+      let month = document.querySelector('#id_card_exp_month').value;
+      let year = document.querySelector('#id_card_exp_year').value;
 
-        const extraData = {
-          full_name,
-          month,
-          year: year ? new Date().getFullYear().toString().substring(0, 2) + year : null
-        };
-        const submitParams = {
-          metadata: {
-            //you metadata such as
-            order_id: 'ORDER-123' 
-          }
+      const extraData = {
+        full_name,
+        month,
+        year: year ? new Date().getFullYear().toString().substring(0, 2) + year : null
+      };
+      const submitParams = {
+        metadata: {
+          //you metadata such as
+          order_id: 'ORDER-123'
         }
-
-        const result = await payment.tokenize(extraData, submitParams);
-        const payment_method = result.tokenResponse.payment_method;
-
-        console.log('Payment Method Data:', payment_method);
-
-        // Populate the result section with payment method details
-        document.getElementById("card-token").textContent = payment_method.token;
-        document.getElementById("card-number").textContent = payment_method.number;
-        document.getElementById("first-six").textContent = payment_method.first_six_digits;
-        document.getElementById("last-four").textContent = payment_method.last_four_digits;
-        document.getElementById("card-type").textContent = payment_method.card_type;
-        document.getElementById("fingerprint").textContent = payment_method.fingerprint;
-        document.getElementById("metadata").textContent = JSON.stringify(payment_method.metadata, null, 2)
-        document.getElementById("payment-result").classList.remove('d-none');
-
-        // reset the submit button to its original text
-        submitButton.textContent = submitButton.dataset.originalText || 'Pay Now';
-      } catch (err) {
-        console.error('Tokenize failed:', err);
       }
+
+      payment.submit(extraData, submitParams);
     };
   </script>
 </body>
