@@ -10,7 +10,6 @@
     href="https://fonts.googleapis.com/css2?family=Source+Code+Pro:ital,wght@0,200..900;1,200..900&family=Space+Mono:ital,wght@0,400;0,700;1,400;1,700&display=swap"
     rel="stylesheet">
   <script async defer src="https://buttons.github.io/buttons.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.56.0/min/vs/editor/editor.main.js" integrity="sha512-b0ZvZAgTbBUzZKnmT2CkPoUxy8RVI5XFHgvhYtj1U9K46zZaHQ4uaaP+jzNpaOudkzP18362345DlH5UIjM6dA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
   <style>
     body {
       background-color: #f8f9fa;
@@ -185,7 +184,7 @@
   </section>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.11/clipboard.min.js"></script>
-  <script src="https://sandbox.anuwatwork.com/js/v1/payment.js"></script>
+  <script src="https://sandbox.29next.store/js/v1/payment.js"></script>
   <script>
     new ClipboardJS('.clipboard', {
       text: trigger => trigger.textContent,
@@ -268,6 +267,7 @@
         let selector = fieldSelectorForAttribute(err.attribute);
         if (selector) setFieldInvalid(selector, err.message);
       });
+      submitButton.removeAttribute('disabled');
     };
 
     payment.onError = (error) => {
@@ -290,7 +290,7 @@
       } else if (error.message) {
         errorHtml += `${error.message}<br/>`;
       } else {
-        errorHtml = `${error.error??error}<br/>`;
+        errorHtml = `${error}<br/>`;
       }
 
       submitButton.removeAttribute('disabled');
@@ -338,6 +338,8 @@
 
       // reset the submit button to its original text
       submitButton.textContent = submitButton.dataset.originalText || 'Pay Now';
+      submitButton.removeAttribute('disabled');
+
     };
 
     function submitPaymentForm() {
