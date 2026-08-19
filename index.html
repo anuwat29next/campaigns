@@ -268,6 +268,7 @@
         if (selector) setFieldInvalid(selector, err.message);
       });
       submitButton.removeAttribute('disabled');
+      submitButton.textContent = submitButton.dataset.originalText || 'Pay Now';
     };
 
     payment.onError = (error) => {
