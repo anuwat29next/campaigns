@@ -351,7 +351,7 @@
       document.querySelectorAll('#payment-form .is-invalid').forEach(el => el.classList.remove('is-invalid'));
       // Clear error message
       let errorBlock = document.getElementById("payment-error-block");
-      errorBlock.classList.remove('d-none');
+      errorBlock.classList.add('d-none');
       errorBlock.innerHTML = '';
 
       // disable the submit button and show loading text
